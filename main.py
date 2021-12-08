@@ -1,8 +1,10 @@
 
+
 class Nodo:
     def __init__(self, value=None):
         self.siguientes = {}
         self.value = value
+        self.finPalabra=False
 
 class dictionaryTrie(object):
     def __init__(self):
@@ -33,6 +35,7 @@ class dictionaryTrie(object):
             actual= actual.siguientes[c]
         self.keys.append(key)
         actual.value=value
+        actual.finPalabra = True
         self.size +=1
 
     def __getitem__(self, item):
@@ -56,21 +59,24 @@ class dictionaryTrie(object):
     def __contains__(self, item):
         return self.keys.count(item)>0
 
-
-def main():
-    diccTrie = stringMap()
-    dicc = {"hola":2,"mundo":3}
-
-    print(diccTrie)
-
-    diccTrie.insert("hola",2)
-    diccTrie.insert("mundo",3)
-    diccTrie.insert("!",4)
-
-    print(diccTrie)
-
-    for i in diccTrie:
-        print(i)
-
-
-main()
+    def erase(self,item):
+        actual = self.root
+        ultimo = self.root
+        i, j = 0, 0
+        while i<len(item):
+            actual=actual.siguientes[item[i]]
+            i+=1
+            if actual.finPalabra:
+                ultimo=actual
+                j=i
+        self.keys.remove(item)
+        actual.finPalabra=False
+        self.size-=1
+        if j<len(item):
+            ultimo = ultimo.siguientes[item[j]]
+            j += 1
+            while j<len(item):
+                aux=ultimo
+                ultimo = ultimo.siguientes[item[j]]
+                aux.siguientes.pop(item[j])
+                j+=1
